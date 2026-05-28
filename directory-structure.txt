@@ -1,0 +1,15 @@
+alphabets-card-game/
+├── vercel.json
+├── requirements.txt
+├── main.py
+└── src/
+    ├── data/
+    │   └── word-bank.json
+    ├── templates/
+    │   └── page/
+    │       └── index.html
+    ├── style/
+    │   └── globals.css
+    └── script/
+        ├── globals.js
+        └── game_logic.py
