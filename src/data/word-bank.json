@@ -1,0 +1,36 @@
+{
+  "verbs": [
+    "work", "play", "walk", "talk", "sing", "jump", "cook", "read", "make", "take", 
+    "give", "find", "lose", "keep", "hold", "meet", "seek", "seem", "feel", "hear", 
+    "love", "hate", "wish", "hope", "fear", "care", "live", "die", "grow", "show", 
+    "blow", "draw", "know", "rise", "fall", "ride", "swim", "fly", "wear", "tear", 
+    "sell", "buy", "pay", "cost", "send", "bend", "lend", "run", "sit", "win", 
+    "cut", "try", "say", "see", "get", "add", "hit", "let", "put", "use", "act", 
+    "ask", "beg", "bid", "cry", "dig", "eat", "fix", "rob"
+  ],
+  "valid_words": [
+    "work", "pork", "perk", "park", "pack", "back", "bark", "dark", "dirt", "diet", 
+    "date", "rate", "late", "lime", "like", "lake", "make", "male", "sale", "safe", 
+    "save", "wave", "cave", "gave", "game", "gale", "gate", "hate", "hare", "care", 
+    "bare", "bore", "born", "burn", "turn", "torn", "tear", "team", "seam", "seat", 
+    "beat", "boat", "coat", "chat", "that", "coal", "cool", "fool", "food", "foot", 
+    "wood", "good", "goad", "road", "load", "lead", "read", "bead", "head", "hear", 
+    "dear", "bear", "pear", "fear", "year", "wear", "gear", "rear", "roar", "soar", 
+    "star", "spur", "spun", "shun", "shot", "spot", "slot", "plot", "play", "clay", 
+    "pray", "gray", "bray", "slay", "stay", "way", "day", "may", "say", "pay", 
+    "lay", "bay", "gay", "hay", "toy", "boy", "joy", "run", "sun", "fun", "gun", 
+    "nun", "bun", "pun", "pin", "pen", "pan", "man", "can", "tan", "fan", "ban", 
+    "ran", "van", "win", "cob", "bob", "rob", "sob", "job", "mob", "dog", "cog", 
+    "log", "fog", "hog", "jog", "cat", "hat", "rat", "mat", "bat", "fat", "pat", 
+    "sat", "wet", "net", "met", "jet", "set", "pet", "bet", "pit", "hit", "bit", 
+    "fit", "sit", "lit", "cold", "bold", "hold", "fold", "gold", "told", "mold", 
+    "sold", "warm", "farm", "harm", "part", "port", "sort", "fort", "cart", "mart", 
+    "dart", "tart", "tick", "kick", "sick", "pick", "lick", "nick", "deck", "neck", 
+    "peck", "dock", "rock", "sock", "lock", "cock", "mock", "buck", "duck", "luck", 
+    "tuck", "suck", "puck", "sink", "pink", "link", "wink", "mink", "tank", "bank", 
+    "rank", "sank", "lank", "band", "land", "sand", "hand", "wand", "wind", "mind", 
+    "bind", "find", "kind", "line", "fine", "mine", "dine", "pine", "vine", "nine", 
+    "tine", "zone", "bone", "cone", "tone", "hone", "done", "gone", "more", "sore", 
+    "lore", "fore", "core", "wore", "tore", "wire"
+  ]
+}
