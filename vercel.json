@@ -17,11 +17,11 @@
     },
     {
       "src": "/style/(.*)",
-      "dest": "main.py"
+      "dest": "src/style/$1"
     },
     {
-      "src": "/script/(.*)",
-      "dest": "main.py"
+      "src": "/script/globals.js",
+      "dest": "src/script/globals.js"
     },
     {
       "src": "/api/(.*)",
