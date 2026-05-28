@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/robots.txt",
+      "dest": "main.py"
+    },
+    {
+      "src": "/sitemap.xml",
+      "dest": "main.py"
+    },
+    {
+      "src": "/style/(.*)",
+      "dest": "main.py"
+    },
+    {
+      "src": "/script/(.*)",
+      "dest": "main.py"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "main.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "main.py"
+    }
+  ]
+}
