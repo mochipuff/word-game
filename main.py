@@ -1,8 +1,15 @@
+import sys
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import random
+
 from src.script.game_logic import load_word_bank, get_starting_word, is_valid_word, get_bot_move
 
 app = FastAPI(
@@ -10,17 +17,29 @@ app = FastAPI(
     description="SPA turn-based alphabet word morphing game with intelligent AI difficulty levels."
 )
 
-# Mount files static
-app.mount("/style", StaticFiles(directory="src/style"), name="style")
-app.mount("/script", StaticFiles(directory="src/script"), name="script")
+template_dir = os.path.join(BASE_DIR, "src", "templates")
+if not os.path.exists(template_dir):
+    template_dir = os.path.join(os.getcwd(), "src", "templates")
 
-templates = Jinja2Templates(directory="src/templates")
+templates = Jinja2Templates(directory=template_dir)
+
+style_dir = os.path.join(BASE_DIR, "src", "style")
+if not os.path.exists(style_dir):
+    style_dir = os.path.join(os.getcwd(), "src", "style")
+
+script_dir = os.path.join(BASE_DIR, "src", "script")
+if not os.path.exists(script_dir):
+    script_dir = os.path.join(os.getcwd(), "src", "script")
+
+if os.path.exists(style_dir):
+    app.mount("/style", StaticFiles(directory=style_dir), name="style")
+if os.path.exists(script_dir):
+    app.mount("/script", StaticFiles(directory=script_dir), name="script")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_index(request: Request):
     return templates.TemplateResponse("page/index.html", {"request": request})
 
-# SEO Configurations
 @app.get("/robots.txt", response_class=PlainTextResponse)
 async def get_robots():
     return "User-agent: *\nAllow: /\nSitemap: https://alphabets-card-game.vercel.app/sitemap.xml"
@@ -38,20 +57,18 @@ async def get_sitemap():
 </urlset>"""
     return Response(content=sitemap_xml, media_type="application/xml")
 
-# Game REST APIs
 @app.get("/api/start")
 async def start_game():
     word_bank = load_word_bank()
     start_word = get_starting_word(word_bank)
     
-    # Acak dan bagi alfabet menjadi pool P1 dan P2
     alphabet = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    import random
     random.shuffle(alphabet)
     
     p1_pool = alphabet[:13]
     p2_pool = alphabet[13:]
     
-    # Deal awal 7 kartu per-pemain, sisanya masuk tumpukan draw deck
     p1_hand = p1_pool[:7]
     p1_draw = p1_pool[7:]
     
@@ -114,7 +131,3 @@ async def bot_move(payload: dict):
         "played": False,
         "message": "Bot has no valid moves remaining."
     }
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
