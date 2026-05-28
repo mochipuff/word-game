@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Morph: Completed Alphabet Card Game</title>
+  <meta name="description" content="Play the ultimate Word Morphing card game! Change one letter at a time, beat the timer and outsmart the AI bot. Play for free online.">
+  <meta name="keywords" content="word morph, alphabet game, card game, puzzle, fastapi, word-chain">
+  <link rel="canonical" href="https://alphabets-card-game.vercel.app/" />
+  
+  <!-- Tailwind CSS Integration -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/style/globals.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans antialiased overflow-x-hidden select-none">
+
+  <!-- Header Banner -->
+  <header class="w-full py-4 px-6 border-b border-slate-900 bg-slate-950/80 backdrop-blur sticky top-0 z-50 flex items-center justify-between">
+    <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('screen-home')">
+      <div class="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-violet-500/20">W</div>
+      <span class="font-black text-lg tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-indigo-200">WORD MORPH</span>
+    </div>
+    
+    <!-- Header Mini Stat Badge -->
+    <div class="flex items-center gap-4 text-xs md:text-sm">
+      <div class="flex flex-col items-end">
+        <span class="font-bold text-slate-300 stat-name">Challenger</span>
+        <span class="text-xs text-violet-400 font-semibold">Lvl <span class="stat-lvl">1</span></span>
+      </div>
+      <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-extrabold text-violet-300 stat-lvl">1</div>
+    </div>
+  </header>
+
+  <!-- SPA Router Screen Container -->
+  <main class="flex-grow flex items-center justify-center p-4 max-w-4xl mx-auto w-full">
+
+    <!-- HOME / DASHBOARD SCREEN -->
+    <div id="screen-home" class="app-screen w-full flex flex-col gap-6 animate-appear">
+      
+      <!-- Profile & Progression Card -->
+      <div class="glass-panel rounded-3xl p-6 relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-violet-500/10 rounded-full blur-2xl"></div>
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center font-black text-3xl text-white shadow-xl shadow-violet-500/30 stat-lvl">1</div>
+            <div>
+              <h2 class="text-2xl font-black tracking-wide text-slate-100 stat-name">Challenger</h2>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-xs font-semibold text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-full">Level Player</span>
+                <span class="text-xs text-slate-400 stat-xp">0/100 XP</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Difficulty Quick Setup -->
+          <div class="w-full md:w-auto flex flex-col gap-1.5">
+            <label class="text-xs text-slate-400 font-bold tracking-wider">AI DIFFICULTY</label>
+            <select id="difficulty-selector" class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-200 outline-none focus:border-violet-500 transition-colors">
+              <option value="easy">Easy (30% Defect)</option>
+              <option value="medium" selected>Medium AI</option>
+              <option value="hard">Hard (Look-Ahead)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Experience Bar -->
+        <div class="w-full bg-slate-900 h-2.5 rounded-full mt-6 overflow-hidden border border-slate-800">
+          <div class="stat-xp-bar bg-gradient-to-r from-violet-500 to-indigo-500 h-full w-0 transition-all duration-500"></div>
+        </div>
+      </div>
+
+      <!-- Quick Statistics Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass-panel rounded-2xl p-4 text-center">
+          <span class="text-xs text-slate-500 font-bold tracking-widest uppercase">Played</span>
+          <p id="dash-play" class="text-3xl font-extrabold mt-1 text-slate-100">0</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-4 text-center border-b-2 border-b-emerald-500/20">
+          <span class="text-xs text-slate-500 font-bold tracking-widest uppercase">Wins</span>
+          <p id="dash-win" class="text-3xl font-extrabold mt-1 text-emerald-400">0</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-4 text-center border-b-2 border-b-rose-500/20">
+          <span class="text-xs text-slate-500 font-bold tracking-widest uppercase">Losses</span>
+          <p id="dash-lose" class="text-3xl font-extrabold mt-1 text-rose-400">0</p>
+        </div>
+        <div class="glass-panel rounded-2xl p-4 text-center">
+          <span class="text-xs text-slate-500 font-bold tracking-widest uppercase">Streak</span>
+          <p id="dash-streak" class="text-3xl font-extrabold mt-1 text-amber-400">0 🔥</p>
+        </div>
+      </div>
+
+      <!-- Game Action Hub -->
+      <div class="flex flex-col gap-3 mt-2">
+        <button onclick="triggerStartGame()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 font-black tracking-widest text-lg shadow-xl shadow-violet-600/20 active:scale-95 transition-all text-white">
+          LAUNCH GAME
+        </button>
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="navigate('screen-tutorial')" class="py-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-850 font-bold text-sm tracking-wider transition-colors">
+            HOW TO PLAY
+          </button>
+          <button onclick="navigate('screen-settings')" class="py-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-850 font-bold text-sm tracking-wider transition-colors">
+            SETTINGS
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN GAME SCREEN -->
+    <div id="screen-game" class="app-screen w-full flex flex-col gap-6 hidden animate-appear">
+      
+      <!-- Battle Arena Indicators -->
+      <div class="flex justify-between items-center px-2">
+        <div class="flex items-center gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span id="turn-status-banner" class="text-sm font-black tracking-widest text-emerald-400">YOUR TURN</span>
+        </div>
+        <span class="text-xs bg-slate-900/60 border border-slate-800 px-3 py-1.5 rounded-full text-slate-400 font-bold">Time Limit: 20s / Turn</span>
+      </div>
+
+      <!-- Turn Timer Visual Progress -->
+      <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-slate-850">
+        <div id="game-timer-bar" class="h-full bg-emerald-500" style="width: 100%"></div>
+      </div>
+
+      <!-- Bot Mini Info Card -->
+      <div class="glass-panel rounded-2xl p-4 flex items-center justify-between border-l-4 border-l-violet-600/40">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-violet-950/40 border border-violet-800 flex items-center justify-center text-xl">🤖</div>
+          <div>
+            <h4 class="font-black text-slate-200">Rival Alpha-Bot</h4>
+            <span class="text-xs text-slate-400 font-semibold uppercase tracking-widest">Draw Deck: <span id="bot-deck-count">6</span> left</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="text-xs text-slate-500 font-bold uppercase mr-1">Hand Size:</div>
+          <div class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center font-extrabold text-slate-300" id="bot-hand-count">7</div>
+        </div>
+      </div>
+
+      <!-- Active Word Display Stage -->
+      <div class="glass-panel rounded-3xl p-8 flex flex-col items-center justify-center border-b-4 border-b-violet-600/20">
+        <span class="text-xs text-slate-500 tracking-widest font-black uppercase mb-4">ACTIVE MUTATED WORD</span>
+        
+        <!-- Word display cards container -->
+        <div id="game-word-display" class="flex items-center gap-2.5 md:gap-3.5">
+          <!-- Populated programmatically in globals.js -->
+        </div>
+
+        <p class="text-xs text-slate-500 mt-4 text-center max-w-xs">
+          Select an Alphabet card from your hand, then choose which letter position above you wish to swap.
+        </p>
+      </div>
+
+      <!-- Player Hand Zone -->
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center justify-between px-2">
+          <span class="text-xs text-slate-400 font-black tracking-widest uppercase">YOUR ALPHABET HAND</span>
+          <span class="text-xs text-slate-500 font-semibold">Draw Pile: <span id="player-deck-count">6</span> cards</span>
+        </div>
+
+        <!-- Hand Display cards -->
+        <div id="player-hand" class="flex flex-wrap items-center justify-center gap-2.5 p-3 rounded-2xl bg-slate-900/40 border border-slate-900 min-h-[90px] no-scrollbar">
+          <!-- Populated programmatically -->
+        </div>
+      </div>
+
+      <!-- Option Buttons -->
+      <div class="flex justify-between items-center mt-2 px-1">
+        <span class="text-xs text-amber-500/80 font-bold flex items-center gap-1.5">
+          ⏱️ Turn Countdown: <strong id="game-timer-text">20</strong>s remaining
+        </span>
+        <button onclick="concludeGame(false, 'You conceded the match.')" class="text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 px-4 py-2 rounded-xl transition-all">
+          SURRENDER
+        </button>
+      </div>
+    </div>
+
+    <!-- GAME OVER / SCREEN END -->
+    <div id="screen-end" class="app-screen w-full flex flex-col items-center text-center gap-6 hidden animate-appear">
+      <div class="glass-panel rounded-3xl p-8 max-w-md w-full border-b-4 border-b-violet-600/30">
+        <div class="w-20 h-20 bg-slate-900 border border-slate-800 rounded-3xl flex items-center justify-center text-5xl mx-auto mb-4 animate-bounce">🏆</div>
+        <h2 id="end-title" class="text-4xl font-extrabold text-slate-100">Match Concluded</h2>
+        <p id="end-xp-alert" class="text-sm font-semibold mt-1 mb-4"></p>
+        
+        <p id="end-reason" class="text-slate-400 text-sm mb-6">Reason detailing why the match ended</p>
+        
+        <div class="bg-slate-900/60 border border-slate-850 p-4 rounded-xl mb-6">
+          <span class="text-xs text-slate-500 font-bold uppercase tracking-widest">Final Word Reached</span>
+          <p id="end-final-word" class="text-4xl font-black tracking-wider text-slate-100 mt-1">WORK</p>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <button onclick="triggerStartGame()" class="py-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 rounded-2xl font-black tracking-wider text-white shadow-lg shadow-violet-600/10 active:scale-95 transition-all">
+            PLAY AGAIN
+          </button>
+          <button onclick="navigate('screen-home')" class="py-3 bg-slate-900 hover:bg-slate-800 rounded-xl font-bold text-slate-300 transition-colors">
+            MAIN MENU
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS SCREEN -->
+    <div id="screen-settings" class="app-screen w-full flex flex-col gap-6 hidden animate-appear">
+      <div class="glass-panel rounded-3xl p-6">
+        <h2 class="text-2xl font-black tracking-wider text-slate-100 mb-6">PLAYER SETTINGS</h2>
+        
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="text-xs text-slate-400 font-bold tracking-widest uppercase">Challenger Alias Name</label>
+            <input id="settings-name-input" type="text" maxlength="15" class="bg-slate-900 border border-slate-800 px-4 py-3 rounded-xl font-bold outline-none focus:border-violet-500 text-slate-100 transition-colors">
+          </div>
+
+          <p class="text-xs text-slate-500 mt-2">
+            Progress is automatically saved to LocalStorage. Clearing your browser's data will reset your level, experience points, and history.
+          </p>
+
+          <div class="flex gap-3 mt-6">
+            <button onclick="savePlayerSettings()" class="flex-grow py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-bold transition-all">
+              SAVE CHANGES
+            </button>
+            <button onclick="navigate('screen-home')" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-xl font-bold transition-all">
+              CANCEL
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TUTORIAL / HOW TO PLAY SCREEN -->
+    <div id="screen-tutorial" class="app-screen w-full flex flex-col gap-6 hidden animate-appear">
+      <div class="glass-panel rounded-3xl p-6">
+        <h2 class="text-2xl font-black tracking-wider text-slate-100 mb-4">HOW TO PLAY</h2>
+        
+        <div class="flex flex-col gap-4 text-sm text-slate-300 leading-relaxed">
+          <p>
+            Welcome to <strong class="text-violet-400">Word Morph</strong>! The rule of the game is straightforward: swap one letter from your alphabet hand to turn the active word into another valid English word.
+          </p>
+          
+          <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-850 flex flex-col gap-2">
+            <span class="text-xs text-amber-400 font-bold uppercase tracking-wider">Example Stream:</span>
+            <div class="flex items-center gap-2 font-mono font-bold text-slate-200">
+              <span class="bg-slate-800 px-2.5 py-1 rounded">WORK</span>
+              <span>➡️</span>
+              <span class="bg-slate-800 px-2.5 py-1 rounded text-emerald-400">P</span><span>ORK</span>
+              <span>➡️</span>
+              <span>P</span><span class="bg-slate-800 px-2.5 py-1 rounded text-emerald-400">E</span><span>RK</span>
+            </div>
+            <p class="text-xs text-slate-500">
+              Player A replaced <strong>W</strong> with <strong>P</strong> (WORK to PORK). Next, Player B swapped <strong>O</strong> for <strong>E</strong> (PORK to PERK).
+            </p>
+          </div>
+
+          <ul class="list-disc pl-5 flex flex-col gap-2 text-slate-400">
+            <li>Each player starts with 13 card letters (7 in hand, 6 in draw pile).</li>
+            <li>You have <strong class="text-rose-400">20 seconds</strong> to make a valid swap.</li>
+            <li>If you cannot morph the active word with your current letters, or if your timer runs out, you lose the game!</li>
+            <li>Winning matches grants <strong class="text-emerald-400">+25 XP</strong>. Level up for every 100 XP gained.</li>
+          </ul>
+
+          <button onclick="navigate('screen-home')" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-slate-200 rounded-xl font-bold mt-4 transition-colors">
+            BACK TO DASHBOARD
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer Info -->
+  <footer class="w-full py-4 text-center text-xs text-slate-600 border-t border-slate-950">
+    <p>© 2026 Word Morph. Built with FastAPI and SPA Core technology.</p>
+  </footer>
+
+  <!-- Toast Notification System Anchor -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full px-4 md:px-0"></div>
+
+  <!-- Global Javascript Loading -->
+  <script src="/script/globals.js"></script>
+</body>
+</html>
